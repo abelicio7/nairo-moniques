@@ -505,7 +505,51 @@ const AREAS_OPTS = [
 ];
 
 function Contactos() {
+  const send = useServerFn(sendContactMessage);
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    nome: "",
+    email: "",
+    telefone: "",
+    area: "",
+    mensagem: "",
+  });
+
+  const update = (k: keyof typeof form) => (v: string) =>
+    setForm((f) => ({ ...f, [k]: v }));
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (loading) return;
+    if (!form.area) {
+      toast.error("Selecione uma área de interesse.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await send({
+        data: {
+          nome: form.nome,
+          email: form.email,
+          telefone: form.telefone,
+          area: form.area as any,
+          mensagem: form.mensagem,
+        },
+      });
+      setSent(true);
+      toast.success("Mensagem enviada. Responderemos em até 24 horas úteis.");
+      setForm({ nome: "", email: "", telefone: "", area: "", mensagem: "" });
+    } catch (err) {
+      console.error(err);
+      toast.error(
+        "Não foi possível enviar. Tente novamente ou escreva para nairomoniques@gmail.com."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section id="contactos" className="border-t border-border/60 bg-surface/40 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -559,17 +603,14 @@ function Contactos() {
 
           <Reveal delay={0.1}>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-              }}
+              onSubmit={handleSubmit}
               className="rounded-2xl border border-border bg-background/60 p-8 md:p-10"
             >
               <div className="grid gap-5">
-                <FormField label="Nome Completo" name="nome" type="text" required />
+                <FormField label="Nome Completo" name="nome" type="text" required value={form.nome} onChange={update("nome")} />
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <FormField label="E-mail" name="email" type="email" required />
-                  <FormField label="Telefone" name="telefone" type="tel" />
+                  <FormField label="E-mail" name="email" type="email" required value={form.email} onChange={update("email")} />
+                  <FormField label="Telefone" name="telefone" type="tel" value={form.telefone} onChange={update("telefone")} />
                 </div>
                 <div>
                   <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.22em] text-gold">
@@ -577,8 +618,9 @@ function Contactos() {
                   </label>
                   <select
                     required
+                    value={form.area}
+                    onChange={(e) => update("area")(e.target.value)}
                     className="w-full rounded-lg border border-gold/30 bg-surface/60 px-4 py-3.5 text-sm text-foreground outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/30"
-                    defaultValue=""
                   >
                     <option value="" disabled>Selecione uma área…</option>
                     {AREAS_OPTS.map((a) => (
@@ -593,17 +635,21 @@ function Contactos() {
                   <textarea
                     rows={5}
                     required
+                    minLength={10}
                     maxLength={2000}
+                    value={form.mensagem}
+                    onChange={(e) => update("mensagem")(e.target.value)}
                     className="w-full resize-none rounded-lg border border-gold/30 bg-surface/60 px-4 py-3.5 text-sm text-foreground outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/30"
                     placeholder="Descreva brevemente a sua situação…"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-primary-foreground shadow-gold transition-all hover:brightness-110"
+                  disabled={loading}
+                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-primary-foreground shadow-gold transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {sent ? "Mensagem Enviada ✓" : "Enviar Mensagem Segura"}
-                  {!sent && <ArrowRight className="h-4 w-4" />}
+                  {loading ? "A enviar…" : sent ? "Mensagem Enviada ✓" : "Enviar Mensagem Segura"}
+                  {!loading && !sent && <ArrowRight className="h-4 w-4" />}
                 </button>
                 <p className="text-center text-[11px] text-muted-foreground">
                   Ao enviar, concorda com o tratamento confidencial dos seus dados.
@@ -617,7 +663,21 @@ function Contactos() {
   );
 }
 
-function FormField({ label, name, type, required }: { label: string; name: string; type: string; required?: boolean }) {
+function FormField({
+  label,
+  name,
+  type,
+  required,
+  value,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  type: string;
+  required?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div>
       <label htmlFor={name} className="mb-2 block text-[11px] font-medium uppercase tracking-[0.22em] text-gold">
@@ -628,7 +688,9 @@ function FormField({ label, name, type, required }: { label: string; name: strin
         name={name}
         type={type}
         required={required}
-        maxLength={200}
+        maxLength={type === "tel" ? 30 : type === "email" ? 255 : 100}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-lg border border-gold/30 bg-surface/60 px-4 py-3.5 text-sm text-foreground outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/30"
       />
     </div>
