@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, type ReactNode } from "react";
+import { toast } from "sonner";
+import { sendContactMessage } from "@/lib/contact.functions";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
