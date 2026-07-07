@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 
 import logo from "@/assets/logo-nm.png.asset.json";
-import founderImg from "@/assets/founder-desk.png.asset.json";
-import teamImg from "@/assets/team-portrait.png.asset.json";
+import founderImg from "@/assets/founder-desk.png";
+import teamImg from "@/assets/team-portrait.png";
+
 
 export const Route = createFileRoute("/")({
   component: Home,
