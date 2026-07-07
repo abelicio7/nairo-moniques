@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 
 import logo from "@/assets/logo-nm.png.asset.json";
-import founderImg from "@/assets/founder-desk.png.asset.json";
-import teamImg from "@/assets/team-portrait.png.asset.json";
+import founderImg from "@/assets/founder-desk.png";
+import teamImg from "@/assets/team-portrait.png";
+
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -158,15 +159,15 @@ function Hero() {
               </a>
             </div>
 
-            <div className="mt-14 grid grid-cols-3 gap-6 border-t border-border/60 pt-8">
+            <div className="mt-14 flex flex-col gap-6 border-t border-border/60 pt-8 sm:grid sm:grid-cols-3 sm:gap-6">
               {[
                 { k: "10+", v: "Áreas do Direito" },
                 { k: "100%", v: "Confidencialidade" },
                 { k: "24/7", v: "Assessoria Permanente" },
               ].map((s) => (
-                <div key={s.v}>
+                <div key={s.v} className="flex items-baseline gap-3 sm:block">
                   <div className="font-serif text-2xl text-gold md:text-3xl">{s.k}</div>
-                  <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground sm:mt-1">
                     {s.v}
                   </div>
                 </div>
@@ -180,7 +181,7 @@ function Hero() {
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-gold/25 via-transparent to-gold/10 blur-2xl" />
             <div className="relative overflow-hidden rounded-3xl border border-gold/30 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
               <img
-                src={founderImg.url}
+                src={founderImg}
                 alt="Advogado fundador em conferência no escritório executivo"
                 className="h-[520px] w-full object-cover md:h-[620px]"
               />
@@ -461,7 +462,7 @@ function PorQue() {
               </p>
               <div className="mt-8 overflow-hidden rounded-2xl border border-gold/20">
                 <img
-                  src={teamImg.url}
+                  src={teamImg}
                   alt="Equipa Nairo Moniques Advogados e Consultores"
                   className="h-72 w-full object-cover md:h-96"
                 />
@@ -557,7 +558,7 @@ function Contactos() {
           <SectionHead
             eyebrow="Contactos"
             title={<>Falemos sobre o seu <span className="text-gradient-gold italic">caso</span></>}
-            subtitle="Atendimento confidencial. Respondemos em até 24 horas úteis."
+            subtitle="Fale-nos sobre o seu caso."
           />
         </Reveal>
 
