@@ -558,7 +558,7 @@ function Contactos() {
         <Reveal>
           <SectionHead
             eyebrow="Contactos"
-            title={<>Falemos sobre o seu <span className="text-gradient-gold italic">caso</span></>}
+            title={<>Fale-nos sobre o seu <span className="text-gradient-gold italic">caso</span></>}
             subtitle="Fale-nos sobre o seu caso."
           />
         </Reveal>
