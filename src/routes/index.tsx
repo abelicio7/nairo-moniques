@@ -557,7 +557,7 @@ function Contactos() {
           <SectionHead
             eyebrow="Contactos"
             title={<>Falemos sobre o seu <span className="text-gradient-gold italic">caso</span></>}
-            subtitle="Atendimento confidencial. Respondemos em até 24 horas úteis."
+            subtitle="Fale-nos sobre o seu caso."
           />
         </Reveal>
 
