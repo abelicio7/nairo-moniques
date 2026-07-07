@@ -158,7 +158,7 @@ function Hero() {
               </a>
             </div>
 
-            <div className="mt-14 grid grid-cols-1 gap-6 border-t border-border/60 pt-8 xs:grid-cols-3 sm:grid-cols-3">
+            <div className="mt-14 grid grid-cols-3 gap-4 border-t border-border/60 pt-8 sm:gap-6">
               {[
                 { k: "10+", v: "Áreas do Direito" },
                 { k: "100%", v: "Confidencialidade" },
