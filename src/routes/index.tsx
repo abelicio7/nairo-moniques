@@ -159,15 +159,15 @@ function Hero() {
               </a>
             </div>
 
-            <div className="mt-14 grid grid-cols-3 gap-4 border-t border-border/60 pt-8 sm:gap-6">
+            <div className="mt-14 flex flex-col gap-6 border-t border-border/60 pt-8 sm:grid sm:grid-cols-3 sm:gap-6">
               {[
                 { k: "10+", v: "Áreas do Direito" },
                 { k: "100%", v: "Confidencialidade" },
                 { k: "24/7", v: "Assessoria Permanente" },
               ].map((s) => (
-                <div key={s.v} className="min-w-0">
+                <div key={s.v} className="flex items-baseline gap-3 sm:block">
                   <div className="font-serif text-2xl text-gold md:text-3xl">{s.k}</div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground sm:mt-1">
                     {s.v}
                   </div>
                 </div>
