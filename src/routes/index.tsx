@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 
 import logo from "@/assets/logo-nm.png.asset.json";
-import founderImg from "@/assets/founder-desk.png";
-import teamImg from "@/assets/team-portrait.png";
+import founderImg from "@/assets/founder-desk.png.asset.json";
+import teamImg from "@/assets/team-portrait.png.asset.json";
+
 
 
 export const Route = createFileRoute("/")({
@@ -181,7 +182,7 @@ function Hero() {
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-gold/25 via-transparent to-gold/10 blur-2xl" />
             <div className="relative overflow-hidden rounded-3xl border border-gold/30 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
               <img
-                src={founderImg}
+                src={founderImg.url}
                 alt="Advogado fundador em conferência no escritório executivo"
                 className="h-[520px] w-full object-cover md:h-[620px]"
               />
@@ -462,7 +463,7 @@ function PorQue() {
               </p>
               <div className="mt-8 overflow-hidden rounded-2xl border border-gold/20">
                 <img
-                  src={teamImg}
+                  src={teamImg.url}
                   alt="Equipa Nairo Moniques Advogados e Consultores"
                   className="h-72 w-full object-cover md:h-96"
                 />
