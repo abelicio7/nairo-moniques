@@ -158,15 +158,15 @@ function Hero() {
               </a>
             </div>
 
-            <div className="mt-14 grid grid-cols-3 gap-6 border-t border-border/60 pt-8">
+            <div className="mt-14 grid grid-cols-1 gap-6 border-t border-border/60 pt-8 xs:grid-cols-3 sm:grid-cols-3">
               {[
                 { k: "10+", v: "Áreas do Direito" },
                 { k: "100%", v: "Confidencialidade" },
                 { k: "24/7", v: "Assessoria Permanente" },
               ].map((s) => (
-                <div key={s.v}>
+                <div key={s.v} className="min-w-0">
                   <div className="font-serif text-2xl text-gold md:text-3xl">{s.k}</div>
-                  <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                  <div className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">
                     {s.v}
                   </div>
                 </div>
