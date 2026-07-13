@@ -619,7 +619,7 @@ function Contactos() {
     } catch (err) {
       console.error(err);
       toast.error(
-        "Não foi possível enviar. Tente novamente ou escreva para nairomoniques@gmail.com."
+        "Não foi possível enviar. Tente novamente ou escreva para info@nairomoniquesadvogados.com."
       );
     } finally {
       setLoading(false);
