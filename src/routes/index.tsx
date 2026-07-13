@@ -10,9 +10,9 @@ import {
   HeartHandshake, Eye, CheckCircle2, ChevronRight,
 } from "lucide-react";
 
-import logo from "@/assets/logo-nm.png.asset.json";
-import founderImg from "@/assets/founder-desk.png.asset.json";
-import teamImg from "@/assets/team-portrait.png.asset.json";
+const logo = { url: "/images/logo-nm.png" };
+const founderImg = { url: "/images/founder-desk.png" };
+const teamImg = { url: "/images/team-portrait.png" };
 
 
 
