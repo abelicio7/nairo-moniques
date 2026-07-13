@@ -824,11 +824,11 @@ function Footer() {
             <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                (+258) 84 716 6393
+                (+258) 86 486 00000
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                nairomoniques@gmail.com
+                info@nairomoniquesadvogados.com
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
