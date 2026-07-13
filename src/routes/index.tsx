@@ -76,7 +76,9 @@ function Header() {
         </nav>
 
         <a
-          href="#contactos"
+          href="https://wa.me/258864860000?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20consultor%20da%20Nairo%20Moniques%20Advogados."
+          target="_blank"
+          rel="noopener noreferrer"
           className="hidden rounded-full border border-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-gold transition-all hover:bg-gold hover:text-primary-foreground lg:inline-flex"
         >
           Falar com um Consultor
