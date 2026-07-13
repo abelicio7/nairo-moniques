@@ -642,8 +642,8 @@ function Contactos() {
             <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-background/60 p-8 md:p-10">
               <div className="space-y-6">
                 {[
-                  { icon: Phone, label: "Telefone", value: "(+258) 84 716 6393", href: "tel:+258847166393" },
-                  { icon: Mail, label: "E-mail", value: "nairomoniques@gmail.com", href: "mailto:nairomoniques@gmail.com" },
+                  { icon: Phone, label: "Telefone", value: "(+258) 86 486 0000", href: "tel:+258864860000" },
+                  { icon: Mail, label: "E-mail", value: "info@nairomoniquesadvogados.com", href: "mailto:info@nairomoniquesadvogados.com" },
                   { icon: MapPin, label: "Escritório", value: "Av. Agostinho Neto, n.º 1258, R/C, Porta 12, Cidade de Maputo, Moçambique" },
                 ].map(({ icon: Icon, label, value, href }) => (
                   <a
