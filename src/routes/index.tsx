@@ -320,13 +320,34 @@ const TABS = [
     title: "Consultoria & Assessoria Empresarial",
     icon: Briefcase,
     items: [
-      "Consultoria Jurídica Permanente",
-      "Assessoria Jurídica Empresarial",
-      "Elaboração e Revisão de Contratos",
-      "Constituição de Empresas",
-      "Due Diligence Jurídica",
-      "Compliance e Governação Corporativa",
-      "Consultoria em Investimento Nacional e Estrangeiro",
+      {
+        label: "Consultoria Jurídica Permanente",
+        description: "Acompanhamento contínuo da empresa ou pessoa singular, antecipando riscos e garantindo decisões seguras em tempo real."
+      },
+      {
+        label: "Assessoria Jurídica Empresarial",
+        description: "Orientação estratégica no dia a dia da empresa, desde contratos até relações comerciais, com foco na sustentabilidade do negócio."
+      },
+      {
+        label: "Elaboração e Revisão de Contratos",
+        description: "Redação e análise de contratos claros, seguros e alinhados à lei, protegendo os interesses de todas as partes envolvidas."
+      },
+      {
+        label: "Constituição de Empresas",
+        description: "Apoio completo na criação de sociedades, definição de estatutos e escolha do melhor modelo societário para o projeto."
+      },
+      {
+        label: "Due Diligence Jurídica",
+        description: "Auditoria detalhada da situação legal de uma empresa antes de fusões, aquisições, investimentos ou parcerias."
+      },
+      {
+        label: "Compliance e Governação Corporativa",
+        description: "Implementação de regras internas, códigos de ética e controles que previnem ilícitos e fortalecem a transparência."
+      },
+      {
+        label: "Consultoria em Investimento Nacional e Estrangeiro",
+        description: "Assessoria a investidores nacionais e estrangeiros na estruturação, legalização e proteção de investimentos em Moçambique."
+      },
     ],
   },
   {
@@ -334,12 +355,30 @@ const TABS = [
     title: "Patrocínio & Contencioso",
     icon: Gavel,
     items: [
-      "Patrocínio Judicial",
-      "Contencioso Cível",
-      "Contencioso Criminal",
-      "Contencioso Laboral",
-      "Contencioso Administrativo",
-      "Recuperação de Créditos",
+      {
+        label: "Patrocínio Judicial",
+        description: "Representação processual dedicada dos interesses do cliente em todos os tribunais e instâncias competentes."
+      },
+      {
+        label: "Contencioso Cível",
+        description: "Defesa e propositura de ações relacionadas a contratos, responsabilidade civil, propriedade e outras questões patrimoniais."
+      },
+      {
+        label: "Contencioso Criminal",
+        description: "Assistência técnica em processos-crime, desde a fase de investigação até o julgamento, em defesa dos direitos do cliente."
+      },
+      {
+        label: "Contencioso Laboral",
+        description: "Atuação em litígios entre empregadores e trabalhadores, incluindo rescisões, acidentes de trabalho e direitos sindicais."
+      },
+      {
+        label: "Contencioso Administrativo",
+        description: "Impugnação ou defesa de atos da Administração Pública, licitações, contratos públicos e sanções administrativas."
+      },
+      {
+        label: "Recuperação de Créditos",
+        description: "Estratégias judiciais e extrajudiciais para cobrança de dívidas, execuções e renegociação de passivos."
+      },
     ],
   },
   {
@@ -347,16 +386,46 @@ const TABS = [
     title: "Áreas de Especialidade",
     icon: Scale,
     items: [
-      "Direito Civil",
-      "Direito Comercial e Societário",
-      "Direito do Trabalho",
-      "Direito Criminal",
-      "Direito Administrativo",
-      "Direito Fiscal",
-      "Direito Imobiliário",
-      "Direito Bancário",
-      "Direito das Tecnologias e Proteção de Dados",
-      "Arbitragem e Mediação",
+      {
+        label: "Direito Civil",
+        description: "Atuação em questões de pessoas, família, sucessões, contratos, responsabilidade civil e direitos patrimoniais."
+      },
+      {
+        label: "Direito Comercial e Societário",
+        description: "Assessoria a empresas em constituição, fusões, dissoluções, acordos societários e operações comerciais complexas."
+      },
+      {
+        label: "Direito do Trabalho",
+        description: "Consultoria e contencioso em relações de trabalho, contratos, despedimentos, acidentes e cumprimento da legislação laboral."
+      },
+      {
+        label: "Direito Criminal",
+        description: "Defesa técnica em investigações e processos-crime, assegurando o exercício do direito de defesa em todas as fases."
+      },
+      {
+        label: "Direito Administrativo",
+        description: "Atuação junto da Administração Pública, licitações, contratos administrativos, impugnações e regimes especiais."
+      },
+      {
+        label: "Direito Fiscal",
+        description: "Orientação tributária, contestação de autuações fiscais, regularização fiscal e planeamento tributário adequado."
+      },
+      {
+        label: "Direito Imobiliário",
+        description: "Acompanhamento de compra, venda, arrendamento, regularização de propriedades e projetos de desenvolvimento imobiliário."
+      },
+      {
+        label: "Direito Bancário",
+        description: "Assessoria a instituições financeiras e clientes em operações de crédito, garantias, contratos bancários e regulamentação."
+      },
+      {
+        label: "Direito das Tecnologias e Proteção de Dados",
+        description: "Consultoria em contratos tecnológicos, privacidade, proteção de dados pessoais e conformidade digital."
+      },
+      {
+        label: "Arbitragem e Mediação",
+        description: "Resolução alternativa de conflitos através de arbitragem ou mediação, de forma mais rápida e confidencial."
+      },
     ],
   },
 ];
@@ -414,11 +483,16 @@ function Servicos() {
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {current.items.map((item) => (
                 <li
-                  key={item}
-                  className="group flex items-start gap-3 rounded-lg border border-transparent bg-background/40 p-4 transition-all hover:border-gold/30 hover:bg-background/70"
+                  key={item.label}
+                  className="group flex flex-col gap-2 rounded-lg border border-transparent bg-background/40 p-4 transition-all hover:border-gold/30 hover:bg-background/70"
                 >
-                  <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-gold transition-transform group-hover:translate-x-0.5" />
-                  <span className="text-sm text-foreground/90">{item}</span>
+                  <div className="flex items-start gap-3">
+                    <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-gold transition-transform group-hover:translate-x-0.5" />
+                    <span className="text-sm font-medium text-foreground/90">{item.label}</span>
+                  </div>
+                  <p className="pl-7 text-sm leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </p>
                 </li>
               ))}
             </ul>
