@@ -372,10 +372,10 @@ function Equipe() {
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface p-0">
+        <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto border-border bg-surface p-0">
           {selected && (
-            <div className="grid gap-0 md:grid-cols-[240px_1fr]">
-              <div className="relative aspect-[4/5] md:aspect-auto">
+            <div className="grid gap-0 md:grid-cols-[380px_1fr]">
+              <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[520px]">
                 <img src={selected.image} alt={`Retrato de ${selected.name}`} className="h-full w-full object-cover" />
               </div>
               <div className="p-6 md:p-8">
