@@ -43,6 +43,7 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 const NAV = [
   { label: "Início", href: "#inicio" },
   { label: "Sobre Nós", href: "#sobre" },
+  { label: "Equipe", href: "#equipe" },
   { label: "Serviços", href: "#servicos" },
   { label: "Áreas de Atuação", href: "#areas" },
   { label: "Contactos", href: "#contactos" },
