@@ -4,6 +4,9 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import nairoImg from "@/assets/nairo-moniques.png.asset.json";
+import adilaImg from "@/assets/adila-omar.png.asset.json";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
@@ -40,6 +43,7 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 const NAV = [
   { label: "Início", href: "#inicio" },
   { label: "Sobre Nós", href: "#sobre" },
+  { label: "Equipe", href: "#equipe" },
   { label: "Serviços", href: "#servicos" },
   { label: "Áreas de Atuação", href: "#areas" },
   { label: "Contactos", href: "#contactos" },
@@ -277,6 +281,136 @@ function Sobre() {
     </section>
   );
 }
+
+// ---------- Equipe ----------
+type Membro = {
+  name: string;
+  title: string;
+  role: string;
+  carteira: string;
+  image: string;
+  areas: string[];
+  bio: string[];
+};
+
+const EQUIPE: Membro[] = [
+  {
+    name: "Dr. Nairo Moniques",
+    title: "Sócio Fundador & Advogado",
+    role: "Advogado, Docente Universitário e Mestre em Ciências Policiais",
+    carteira: "Carteira Profissional n.º 1955 — OAM",
+    image: nairoImg.url,
+    areas: ["Direito Criminal", "Família e Sucessões", "Direito Laboral", "Direito Comercial"],
+    bio: [
+      "O Dr. Nairo Moniques é Advogado inscrito na Ordem dos Advogados de Moçambique, sob a Carteira Profissional n.º 1955, dedicando-se ao exercício da advocacia com elevado rigor técnico, ética profissional e permanente compromisso com a defesa do Estado de Direito, da legalidade e dos direitos fundamentais dos cidadãos.",
+      "É Licenciado em Direito e Mestre em Ciências Policiais, na especialidade de Segurança Pública e Investigação Criminal — formação que lhe proporciona uma visão multidisciplinar da justiça, conciliando o conhecimento jurídico com a investigação criminal, a segurança pública e a ciência forense.",
+      "No plano institucional, exerceu as funções de Vice-Presidente da Comissão de Defesa e Reforço das Prerrogativas dos Advogados da Ordem dos Advogados de Moçambique, no mandato 2023–2026, contribuindo para a promoção, proteção e fortalecimento das garantias institucionais indispensáveis ao livre e independente exercício da advocacia. Neste âmbito, participou na reflexão e desenvolvimento de iniciativas voltadas ao reforço das prerrogativas profissionais, à valorização da classe e ao aperfeiçoamento do sistema de administração da justiça.",
+      "Paralelamente à advocacia, exerce funções como Docente Universitário, dedicando-se à formação de novos profissionais do Direito e das Ciências Policiais, promovendo uma abordagem crítica, ética e científica do conhecimento jurídico.",
+      "Actua com destaque nas áreas de Direito Criminal, Família e Sucessões, Direito Laboral e Direito Comercial.",
+    ],
+  },
+  {
+    name: "Dra. Adila Fátima Cassimo Omar",
+    title: "Advogada Associada",
+    role: "Advogada — Licenciada em Direito",
+    carteira: "Carteira Profissional n.º 2542 — OAM",
+    image: adilaImg.url,
+    areas: ["Direito Civil", "Direito Laboral", "Direito Penal", "Direito Comercial", "Família e Menores"],
+    bio: [
+      "A Dra. Adila Fátima Cassimo Omar é Advogada inscrita na Ordem dos Advogados de Moçambique, sob a Carteira Profissional n.º 2542, encontrando-se plenamente habilitada ao exercício da advocacia.",
+      "É Licenciada em Direito, possuindo sólida formação jurídica que sustenta uma atuação pautada pelo rigor técnico, ética profissional, independência e compromisso com a defesa dos direitos e interesses dos seus constituintes.",
+      "Exerce funções como Advogada Associada da Nairo Moniques Advogados e Consultores, participando na prestação de serviços de consultoria jurídica, patrocínio forense e assessoria legal a clientes particulares, empresas e instituições, sempre orientada pelos princípios da legalidade, confidencialidade, responsabilidade e excelência profissional.",
+      "A sua prática profissional caracteriza-se por uma abordagem personalizada de cada processo, privilegiando soluções jurídicas eficazes, preventivas e estrategicamente adequadas às necessidades dos clientes.",
+      "Assume-se como uma briosa profissional, destacando-se pelo empenho, agilidade, responsabilidade e eficiência. Actua nas áreas de Direito Civil, Laboral, Penal, Comercial, Família e Menores.",
+    ],
+  },
+];
+
+function Equipe() {
+  const [selected, setSelected] = useState<Membro | null>(null);
+  return (
+    <section id="equipe" className="relative border-t border-border/60 py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <Reveal>
+          <SectionHead
+            eyebrow="A Nossa Equipe"
+            title={<>Profissionais dedicados à sua <span className="text-gradient-gold italic">causa</span></>}
+            subtitle="Conheça os advogados que compõem a Nairo Moniques Advogados e Consultores. Clique em qualquer membro para conhecer o seu perfil completo."
+          />
+        </Reveal>
+
+        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:gap-10">
+          {EQUIPE.map((m, i) => (
+            <Reveal key={m.name} delay={i * 0.08}>
+              <button
+                type="button"
+                onClick={() => setSelected(m)}
+                className="group block w-full overflow-hidden rounded-2xl border border-border bg-surface text-left transition-all hover:border-gold/60 hover:shadow-gold focus:outline-none focus:ring-2 focus:ring-gold/60"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-background">
+                  <img
+                    src={m.image}
+                    alt={`Retrato de ${m.name}`}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                    <p className="text-xs uppercase tracking-[0.2em] text-gold">{m.title}</p>
+                    <h3 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">{m.name}</h3>
+                    <div className="gold-hairline mt-4 w-12" />
+                    <p className="mt-3 text-sm text-muted-foreground">{m.role}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-gold">
+                      Ver perfil completo <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </div>
+              </button>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+
+      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface p-0">
+          {selected && (
+            <div className="grid gap-0 md:grid-cols-[240px_1fr]">
+              <div className="relative aspect-[4/5] md:aspect-auto">
+                <img src={selected.image} alt={`Retrato de ${selected.name}`} className="h-full w-full object-cover" />
+              </div>
+              <div className="p-6 md:p-8">
+                <DialogHeader className="text-left">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gold">{selected.title}</p>
+                  <DialogTitle className="mt-2 font-serif text-2xl text-foreground md:text-3xl">{selected.name}</DialogTitle>
+                  <div className="gold-hairline mt-3 w-12" />
+                  <DialogDescription className="mt-3 text-sm text-muted-foreground">
+                    {selected.role} · {selected.carteira}
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="mt-6 space-y-4 text-sm leading-relaxed text-foreground/85">
+                  {selected.bio.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+
+                <div className="mt-6">
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Áreas de Atuação</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selected.areas.map((a) => (
+                      <span key={a} className="rounded-full border border-gold/40 bg-gold/5 px-3 py-1 text-xs font-medium text-gold">
+                        {a}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
 
 // ---------- Valores ----------
 const VALORES = [
@@ -859,6 +993,7 @@ function Home() {
       <main>
         <Hero />
         <Sobre />
+        <Equipe />
         <Valores />
         <Servicos />
         <PorQue />
