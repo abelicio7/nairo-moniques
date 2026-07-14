@@ -993,6 +993,7 @@ function Home() {
       <main>
         <Hero />
         <Sobre />
+        <Equipe />
         <Valores />
         <Servicos />
         <PorQue />
