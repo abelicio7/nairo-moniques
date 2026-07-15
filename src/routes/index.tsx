@@ -296,7 +296,7 @@ type Membro = {
 const EQUIPE: Membro[] = [
   {
     name: "Dr. Nairo Moniques",
-    title: "Sócio Fundador & Advogado",
+    title: "SÓCIO FUNDADOR & ADMINISTRADOR",
     role: "Advogado, Docente Universitário e Mestre em Ciências Policiais",
     carteira: "Carteira Profissional n.º 1955 — OAM",
     image: nairoImg.url,
