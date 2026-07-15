@@ -200,7 +200,7 @@ function Hero() {
                   <div className="flex items-center gap-3">
                     <Award className="h-5 w-5 text-gold" />
                     <p className="text-sm text-foreground/90">
-                      <span className="font-semibold text-gold">Sociedade de Advogados</span> vocacionada à excelência técnica e ética profissional.
+                      <span className="font-semibold text-gold">Sociedade de Advogados</span> vocacionada à excelência, ética e deontologia profissional.
                     </p>
                   </div>
                 </div>
