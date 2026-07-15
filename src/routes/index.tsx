@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
