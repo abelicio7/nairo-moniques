@@ -5,8 +5,6 @@ import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import nairoImg from "@/assets/nairo-moniques.png.asset.json";
-import adilaImg from "@/assets/adila-omar.png.asset.json";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
@@ -16,6 +14,8 @@ import {
 const logo = { url: "/images/logo-nm.png" };
 const founderImg = { url: "/images/founder-desk.png" };
 const teamImg = { url: "/images/team-portrait.png" };
+const nairoImg = { url: "/images/nairo-moniques.png" };
+const adilaImg = { url: "/images/adila-omar.png" };
 
 
 
