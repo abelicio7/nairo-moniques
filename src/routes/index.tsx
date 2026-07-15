@@ -297,7 +297,7 @@ const EQUIPE: Membro[] = [
   {
     name: "Dr. Nairo Moniques",
     title: "SÓCIO FUNDADOR & ADMINISTRADOR",
-    role: "Advogado, Docente Universitário e Mestre em Ciências Policiais",
+    role: "Advogado, Docente Universitário e Mestre em Segurança Pública e Investigação Criminal",
     carteira: "Carteira Profissional n.º 1955 — OAM",
     image: nairoImg.url,
     areas: ["Direito Criminal", "Família e Sucessões", "Direito Laboral", "Direito Comercial"],
