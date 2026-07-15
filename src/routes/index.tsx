@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
@@ -372,7 +372,7 @@ function Equipe() {
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto border-border bg-surface p-0">
+        <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto border-border bg-surface p-0 pt-12 sm:pt-14">
           {selected && (
             <div className="grid gap-0 md:grid-cols-[380px_1fr]">
               <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[520px]">
@@ -401,6 +401,18 @@ function Equipe() {
                       </span>
                     ))}
                   </div>
+                </div>
+
+                <div className="mt-8 flex justify-center md:hidden">
+                  <DialogClose asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 rounded-full border border-gold/60 px-6 py-3 text-sm font-semibold text-gold transition-all hover:bg-gold/10"
+                    >
+                      <X className="h-4 w-4" />
+                      Voltar
+                    </button>
+                  </DialogClose>
                 </div>
               </div>
             </div>
