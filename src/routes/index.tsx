@@ -5,6 +5,7 @@ import { useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sendContactMessage } from "@/lib/contact.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { LangProvider, useLang, type Lang } from "@/lib/i18n";
 import {
   Menu, X, Phone, Mail, MapPin, ArrowRight, ShieldCheck, Scale, Gavel,
   Landmark, Briefcase, FileText, Users, Award, Lock, Zap, Sparkles,
@@ -17,11 +18,40 @@ const teamImg = { url: "/images/team-portrait.png" };
 const nairoImg = { url: "/images/nairo-moniques.png" };
 const adilaImg = { url: "/images/adila-omar.png" };
 
+// image map by member id
+const MEMBER_IMG: Record<string, string> = {
+  nairo: nairoImg.url,
+  adila: adilaImg.url,
+};
 
+// icon maps for translated arrays
+const TAB_ICONS: Record<string, typeof Briefcase> = {
+  consultoria: Briefcase,
+  contencioso: Gavel,
+  areas: Scale,
+};
+const VALUE_ICONS: Record<string, typeof ShieldCheck> = {
+  etica: ShieldCheck, prof: Briefcase, indep: Landmark, conf: Lock, exc: Award,
+  resp: CheckCircle2, transp: Eye, cel: Zap, inov: Sparkles, comp: HeartHandshake,
+};
+const REASON_ICONS: Record<string, typeof Users> = {
+  atend: Users, padrao: Award, sol: Sparkles, rap: Zap, acomp: HeartHandshake,
+};
+
+const WHATSAPP_PT = "https://wa.me/258864860000?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20consultor%20da%20Nairo%20Moniques%20Advogados.";
+const WHATSAPP_EN = "https://wa.me/258864860000?text=Hello%2C%20I%20would%20like%20to%20speak%20with%20a%20consultant%20at%20Nairo%20Moniques%20Advogados.";
 
 export const Route = createFileRoute("/")({
-  component: Home,
+  component: HomeWrapper,
 });
+
+function HomeWrapper() {
+  return (
+    <LangProvider>
+      <Home />
+    </LangProvider>
+  );
+}
 
 // ---------- Reveal wrapper ----------
 function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
@@ -39,18 +69,45 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
   );
 }
 
-// ---------- Header ----------
-const NAV = [
-  { label: "Início", href: "#inicio" },
-  { label: "Sobre Nós", href: "#sobre" },
-  { label: "Equipe", href: "#equipe" },
-  { label: "Serviços", href: "#servicos" },
-  { label: "Áreas de Atuação", href: "#areas" },
-  { label: "Contactos", href: "#contactos" },
-];
+// ---------- Language Toggle ----------
+function LangToggle({ className = "" }: { className?: string }) {
+  const { lang, setLang } = useLang();
+  const btn = (l: Lang, label: string) => (
+    <button
+      key={l}
+      type="button"
+      onClick={() => setLang(l)}
+      aria-pressed={lang === l}
+      aria-label={l === "pt" ? "Português" : "English"}
+      className={`px-2.5 py-1 text-[11px] font-semibold tracking-[0.15em] transition-colors ${
+        lang === l ? "bg-gold text-primary-foreground" : "text-gold hover:bg-gold/10"
+      }`}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className={`inline-flex items-center overflow-hidden rounded-full border border-gold/60 ${className}`}>
+      {btn("pt", "PT")}
+      <span className="h-4 w-px bg-gold/40" />
+      {btn("en", "EN")}
+    </div>
+  );
+}
 
+// ---------- Header ----------
 function Header() {
   const [open, setOpen] = useState(false);
+  const { t, lang } = useLang();
+  const NAV = [
+    { label: t.nav.inicio, href: "#inicio" },
+    { label: t.nav.sobre, href: "#sobre" },
+    { label: t.nav.equipe, href: "#equipe" },
+    { label: t.nav.servicos, href: "#servicos" },
+    { label: t.nav.areas, href: "#areas" },
+    { label: t.nav.contactos, href: "#contactos" },
+  ];
+  const wa = lang === "pt" ? WHATSAPP_PT : WHATSAPP_EN;
   return (
     <header className="glass sticky top-0 z-50">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4 md:px-8">
@@ -61,7 +118,7 @@ function Header() {
               NAIRO MONIQUES
             </span>
             <span className="truncate text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-              Advogados e Consultores
+              {lang === "pt" ? "Advogados e Consultores" : "Attorneys & Consultants"}
             </span>
           </div>
         </a>
@@ -79,22 +136,28 @@ function Header() {
           ))}
         </nav>
 
-        <a
-          href="https://wa.me/258864860000?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20consultor%20da%20Nairo%20Moniques%20Advogados."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden rounded-full border border-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-gold transition-all hover:bg-gold hover:text-primary-foreground lg:inline-flex"
-        >
-          Falar com um Consultor
-        </a>
+        <div className="hidden items-center gap-4 lg:flex">
+          <LangToggle />
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-gold transition-all hover:bg-gold hover:text-primary-foreground"
+          >
+            {t.cta.consultor}
+          </a>
+        </div>
 
-        <button
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-gold/40 text-gold lg:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LangToggle />
+          <button
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-gold/40 text-gold"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -111,13 +174,13 @@ function Header() {
               </a>
             ))}
             <a
-              href="https://wa.me/258864860000?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20consultor%20da%20Nairo%20Moniques%20Advogados."
+              href={wa}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="mt-2 rounded-full border border-gold px-5 py-3 text-center text-xs font-semibold uppercase tracking-[0.15em] text-gold"
             >
-              Falar com um Consultor
+              {t.cta.consultor}
             </a>
           </nav>
         </div>
@@ -128,6 +191,7 @@ function Header() {
 
 // ---------- Hero ----------
 function Hero() {
+  const { t, lang } = useLang();
   return (
     <section id="inicio" className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -141,39 +205,35 @@ function Hero() {
             <div className="mb-6 inline-flex items-center gap-3">
               <span className="h-px w-10 bg-gold" />
               <span className="text-xs font-medium uppercase tracking-[0.32em] text-gold">
-                Maputo · Moçambique
+                {t.location}
               </span>
             </div>
             <h1 className="font-serif text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-[4.25rem]">
-              Excelência Jurídica,{" "}
-              <span className="text-gradient-gold italic">Rigor Técnico</span> e Compromisso Permanente.
+              {t.hero.title1}
+              <span className="text-gradient-gold italic">{t.hero.titleItalic}</span>
+              {t.hero.title2}
             </h1>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Defendemos direitos, protegemos interesses e construímos soluções jurídicas com
-              excelência.
+              {t.hero.subtitle}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <a
                 href="#contactos"
                 className="group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-gold transition-all hover:brightness-110"
               >
-                Agendar Consultoria Jurídica
+                {t.cta.agendar}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
               <a
                 href="#sobre"
                 className="inline-flex items-center gap-2 rounded-full border border-gold/60 px-7 py-3.5 text-sm font-semibold text-gold transition-all hover:bg-gold/10"
               >
-                Conhecer a Firma
+                {t.cta.conhecer}
               </a>
             </div>
 
             <div className="mt-14 flex flex-col gap-6 border-t border-border/60 pt-8 sm:grid sm:grid-cols-3 sm:gap-6">
-              {[
-                { k: "10+", v: "Áreas do Direito" },
-                { k: "100%", v: "Confidencialidade" },
-                { k: "24/7", v: "Assessoria Permanente" },
-              ].map((s) => (
+              {t.hero.stats.map((s) => (
                 <div key={s.v} className="flex items-baseline gap-3 sm:block">
                   <div className="font-serif text-2xl text-gold md:text-3xl">{s.k}</div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground sm:mt-1">
@@ -191,7 +251,7 @@ function Hero() {
             <div className="relative overflow-hidden rounded-3xl border border-gold/30 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
               <img
                 src={founderImg.url}
-                alt="Advogado fundador em conferência no escritório executivo"
+                alt={lang === "pt" ? "Advogado fundador em conferência no escritório executivo" : "Founding attorney in the executive office"}
                 className="h-[520px] w-full object-cover md:h-[620px]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
@@ -200,7 +260,7 @@ function Hero() {
                   <div className="flex items-center gap-3">
                     <Award className="h-5 w-5 text-gold" />
                     <p className="text-sm text-foreground/90">
-                      <span className="font-semibold text-gold">Sociedade de Advogados</span> vocacionada à excelência, ética e deontologia profissional.
+                      {t.hero.badge}
                     </p>
                   </div>
                 </div>
@@ -238,14 +298,15 @@ function SectionHead({ eyebrow, title, subtitle }: { eyebrow: string; title: Rea
 
 // ---------- Sobre ----------
 function Sobre() {
+  const { t } = useLang();
   return (
     <section id="sobre" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHead
-            eyebrow="A Firma"
-            title={<>Uma tradição de <span className="text-gradient-gold italic">excelência jurídica</span></>}
-            subtitle="Uma sociedade vocacionada para a prestação de serviços jurídicos e de consultoria de excelência, pautando a sua atuação pelo rigor técnico, ética profissional e confidencialidade."
+            eyebrow={t.sobre.eyebrow}
+            title={<>{t.sobre.titlePre}<span className="text-gradient-gold italic">{t.sobre.titleItalic}</span></>}
+            subtitle={t.sobre.subtitle}
           />
         </Reveal>
 
@@ -255,11 +316,10 @@ function Sobre() {
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-gold/40 bg-gold/5 text-gold">
                 <Eye className="h-5 w-5" />
               </div>
-              <h3 className="font-serif text-2xl text-foreground md:text-3xl">Visão</h3>
+              <h3 className="font-serif text-2xl text-foreground md:text-3xl">{t.sobre.visao.title}</h3>
               <div className="gold-hairline my-5 w-16" />
               <p className="text-base leading-relaxed text-muted-foreground">
-                Ser uma referência nacional e regional na prestação de serviços jurídicos e de
-                consultoria, reconhecida pela excelência, inovação e integridade.
+                {t.sobre.visao.text}
               </p>
             </article>
           </Reveal>
@@ -268,11 +328,10 @@ function Sobre() {
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-gold/40 bg-gold/5 text-gold">
                 <Scale className="h-5 w-5" />
               </div>
-              <h3 className="font-serif text-2xl text-foreground md:text-3xl">Missão</h3>
+              <h3 className="font-serif text-2xl text-foreground md:text-3xl">{t.sobre.missao.title}</h3>
               <div className="gold-hairline my-5 w-16" />
               <p className="text-base leading-relaxed text-muted-foreground">
-                Prestar serviços jurídicos de elevada qualidade, assegurando uma defesa técnica
-                eficiente e aconselhamento estratégico.
+                {t.sobre.missao.text}
               </p>
             </article>
           </Reveal>
@@ -283,74 +342,36 @@ function Sobre() {
 }
 
 // ---------- Equipe ----------
-type Membro = {
-  name: string;
-  title: string;
-  role: string;
-  carteira: string;
-  image: string;
-  areas: string[];
-  bio: string[];
-};
-
-const EQUIPE: Membro[] = [
-  {
-    name: "Dr. Nairo Moniques",
-    title: "SÓCIO FUNDADOR & ADMINISTRADOR",
-    role: "Advogado, Docente Universitário e Mestre em Segurança Pública e Investigação Criminal",
-    carteira: "Carteira Profissional n.º 1955 — OAM",
-    image: nairoImg.url,
-    areas: ["Direito Criminal", "Família e Sucessões", "Direito Laboral", "Direito Comercial"],
-    bio: [
-      "O Dr. Nairo Moniques é Advogado inscrito na Ordem dos Advogados de Moçambique, sob a Carteira Profissional n.º 1955, dedicando-se ao exercício da advocacia com elevado rigor técnico, ética profissional e permanente compromisso com a defesa do Estado de Direito, da legalidade e dos direitos fundamentais dos cidadãos.",
-      "É Licenciado em Direito e Mestre em Ciências Policiais, na especialidade de Segurança Pública e Investigação Criminal — formação que lhe proporciona uma visão multidisciplinar da justiça, conciliando o conhecimento jurídico com a investigação criminal, a segurança pública e a ciência forense.",
-      "No plano institucional, exerceu as funções de Vice-Presidente da Comissão de Defesa e Reforço das Prerrogativas dos Advogados da Ordem dos Advogados de Moçambique, no mandato 2023–2026, contribuindo para a promoção, proteção e fortalecimento das garantias institucionais indispensáveis ao livre e independente exercício da advocacia. Neste âmbito, participou na reflexão e desenvolvimento de iniciativas voltadas ao reforço das prerrogativas profissionais, à valorização da classe e ao aperfeiçoamento do sistema de administração da justiça.",
-      "Paralelamente à advocacia, é CEO da WARYA CONSULTING AND SERVICES, LDA, empresa vocacionada na Consultoria de negócios e mercados. Exerce funções como Docente Universitário, dedicando-se à formação de novos profissionais do Direito e das Ciências Policiais, promovendo uma abordagem crítica, ética e científica do conhecimento jurídico.",
-      "Actua com destaque nas áreas de Direito Criminal, Família e Sucessões, Direito Laboral e Direito Comercial.",
-    ],
-  },
-  {
-    name: "Dra. Adila Fátima Cassimo Omar",
-    title: "Advogada Associada",
-    role: "Advogada — Licenciada em Direito",
-    carteira: "Carteira Profissional n.º 2542 — OAM",
-    image: adilaImg.url,
-    areas: ["Direito Civil", "Direito Laboral", "Direito Penal", "Direito Comercial", "Família e Menores"],
-    bio: [
-      "A Dra. Adila Fátima Cassimo Omar é Advogada inscrita na Ordem dos Advogados de Moçambique, sob a Carteira Profissional n.º 2542, encontrando-se plenamente habilitada ao exercício da advocacia.",
-      "É Licenciada em Direito, possuindo sólida formação jurídica que sustenta uma atuação pautada pelo rigor técnico, ética profissional, independência e compromisso com a defesa dos direitos e interesses dos seus constituintes.",
-      "Exerce funções como Advogada Associada da Nairo Moniques Advogados e Consultores, participando na prestação de serviços de consultoria jurídica, patrocínio forense e assessoria legal a clientes particulares, empresas e instituições, sempre orientada pelos princípios da legalidade, confidencialidade, responsabilidade e excelência profissional.",
-      "A sua prática profissional caracteriza-se por uma abordagem personalizada de cada processo, privilegiando soluções jurídicas eficazes, preventivas e estrategicamente adequadas às necessidades dos clientes.",
-      "Assume-se como uma briosa profissional, destacando-se pelo empenho, agilidade, responsabilidade e eficiência. Actua nas áreas de Direito Civil, Laboral, Penal, Comercial, Família e Menores.",
-    ],
-  },
-];
+type Membro = ReturnType<typeof useLang>["t"]["equipe"]["membros"][number];
 
 function Equipe() {
-  const [selected, setSelected] = useState<Membro | null>(null);
+  const { t, lang } = useLang();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected: Membro | null = selectedId ? t.equipe.membros.find((m) => m.id === selectedId) ?? null : null;
+
   return (
     <section id="equipe" className="relative border-t border-border/60 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHead
-            eyebrow="A Nossa Equipe"
-            title={<>Profissionais dedicados à sua <span className="text-gradient-gold italic">causa</span></>}
-            subtitle="Conheça os advogados que compõem a Nairo Moniques Advogados e Consultores. Clique em qualquer membro para conhecer o seu perfil completo."
+            eyebrow={t.equipe.eyebrow}
+            title={<>{t.equipe.titlePre}<span className="text-gradient-gold italic">{t.equipe.titleItalic}</span></>}
+            subtitle={t.equipe.subtitle}
           />
         </Reveal>
 
         <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:gap-10">
-          {EQUIPE.map((m, i) => (
-            <Reveal key={m.name} delay={i * 0.08}>
+          {t.equipe.membros.map((m, i) => (
+            <Reveal key={m.id} delay={i * 0.08}>
               <button
                 type="button"
-                onClick={() => setSelected(m)}
+                onClick={() => setSelectedId(m.id)}
                 className="group block w-full overflow-hidden rounded-2xl border border-border bg-surface text-left transition-all hover:border-gold/60 hover:shadow-gold focus:outline-none focus:ring-2 focus:ring-gold/60"
               >
                 <div className="relative aspect-[4/5] overflow-hidden bg-background">
                   <img
-                    src={m.image}
-                    alt={`Retrato de ${m.name}`}
+                    src={MEMBER_IMG[m.id]}
+                    alt={`${lang === "pt" ? "Retrato de" : "Portrait of"} ${m.name}`}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
@@ -361,7 +382,7 @@ function Equipe() {
                     <div className="gold-hairline mt-4 w-12" />
                     <p className="mt-3 text-sm text-muted-foreground">{m.role}</p>
                     <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-gold">
-                      Ver perfil completo <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      {t.cta.verPerfil} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
                 </div>
@@ -371,12 +392,12 @@ function Equipe() {
         </div>
       </div>
 
-      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelectedId(null)}>
         <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto border-border bg-surface p-0 pt-12 sm:pt-14">
           {selected && (
             <div className="grid gap-0 md:grid-cols-[380px_1fr]">
               <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[520px]">
-                <img src={selected.image} alt={`Retrato de ${selected.name}`} className="h-full w-full object-cover" />
+                <img src={MEMBER_IMG[selected.id]} alt={`${lang === "pt" ? "Retrato de" : "Portrait of"} ${selected.name}`} className="h-full w-full object-cover" />
               </div>
               <div className="p-6 md:p-8">
                 <DialogHeader className="text-left">
@@ -393,7 +414,7 @@ function Equipe() {
                 </div>
 
                 <div className="mt-6">
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Áreas de Atuação</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{t.equipe.areasLabel}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selected.areas.map((a) => (
                       <span key={a} className="rounded-full border border-gold/40 bg-gold/5 px-3 py-1 text-xs font-medium text-gold">
@@ -410,7 +431,7 @@ function Equipe() {
                       className="inline-flex items-center gap-2 rounded-full border border-gold/60 px-6 py-3 text-sm font-semibold text-gold transition-all hover:bg-gold/10"
                     >
                       <X className="h-4 w-4" />
-                      Voltar
+                      {t.cta.voltar}
                     </button>
                   </DialogClose>
                 </div>
@@ -423,40 +444,30 @@ function Equipe() {
   );
 }
 
-
 // ---------- Valores ----------
-const VALORES = [
-  { icon: ShieldCheck, label: "Ética e Integridade" },
-  { icon: Briefcase, label: "Profissionalismo" },
-  { icon: Landmark, label: "Independência" },
-  { icon: Lock, label: "Confidencialidade" },
-  { icon: Award, label: "Excelência Técnica" },
-  { icon: CheckCircle2, label: "Responsabilidade" },
-  { icon: Eye, label: "Transparência" },
-  { icon: Zap, label: "Celeridade" },
-  { icon: Sparkles, label: "Inovação" },
-  { icon: HeartHandshake, label: "Compromisso com o Cliente" },
-];
-
 function Valores() {
+  const { t } = useLang();
   return (
     <section className="relative border-y border-border/60 bg-surface/40 py-24 md:py-28">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHead
-            eyebrow="Valores Corporativos"
-            title={<>Os pilares da nossa <span className="text-gradient-gold italic">atuação</span></>}
+            eyebrow={t.valores.eyebrow}
+            title={<>{t.valores.titlePre}<span className="text-gradient-gold italic">{t.valores.titleItalic}</span></>}
           />
         </Reveal>
         <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {VALORES.map(({ icon: Icon, label }, i) => (
-            <Reveal key={label} delay={i * 0.04}>
-              <div className="group h-full rounded-xl border border-border bg-background/60 p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-gold">
-                <Icon className="mx-auto h-7 w-7 text-gold transition-transform group-hover:scale-110" />
-                <p className="mt-4 text-sm font-medium text-foreground/90">{label}</p>
-              </div>
-            </Reveal>
-          ))}
+          {t.valores.items.map((v, i) => {
+            const Icon = VALUE_ICONS[v.id] ?? ShieldCheck;
+            return (
+              <Reveal key={v.id} delay={i * 0.04}>
+                <div className="group h-full rounded-xl border border-border bg-background/60 p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-gold">
+                  <Icon className="mx-auto h-7 w-7 text-gold transition-transform group-hover:scale-110" />
+                  <p className="mt-4 text-sm font-medium text-foreground/90">{v.label}</p>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -464,145 +475,33 @@ function Valores() {
 }
 
 // ---------- Serviços (Tabs) ----------
-const TABS = [
-  {
-    id: "consultoria",
-    title: "Consultoria & Assessoria Empresarial",
-    icon: Briefcase,
-    items: [
-      {
-        label: "Consultoria Jurídica Permanente",
-        description: "Acompanhamento contínuo da empresa ou pessoa singular, antecipando riscos e garantindo decisões seguras em tempo real."
-      },
-      {
-        label: "Assessoria Jurídica Empresarial",
-        description: "Orientação estratégica no dia a dia da empresa, desde contratos até relações comerciais, com foco na sustentabilidade do negócio."
-      },
-      {
-        label: "Elaboração e Revisão de Contratos",
-        description: "Redação e análise de contratos claros, seguros e alinhados à lei, protegendo os interesses de todas as partes envolvidas."
-      },
-      {
-        label: "Constituição de Empresas",
-        description: "Apoio completo na criação de sociedades, definição de estatutos e escolha do melhor modelo societário para o projeto."
-      },
-      {
-        label: "Due Diligence Jurídica",
-        description: "Auditoria detalhada da situação legal de uma empresa antes de fusões, aquisições, investimentos ou parcerias."
-      },
-      {
-        label: "Compliance e Governação Corporativa",
-        description: "Implementação de regras internas, códigos de ética e controles que previnem ilícitos e fortalecem a transparência."
-      },
-      {
-        label: "Consultoria em Investimento Nacional e Estrangeiro",
-        description: "Assessoria a investidores nacionais e estrangeiros na estruturação, legalização e proteção de investimentos em Moçambique."
-      },
-    ],
-  },
-  {
-    id: "contencioso",
-    title: "Patrocínio & Contencioso",
-    icon: Gavel,
-    items: [
-      {
-        label: "Patrocínio Judicial",
-        description: "Representação processual dedicada dos interesses do cliente em todos os tribunais e instâncias competentes."
-      },
-      {
-        label: "Contencioso Cível",
-        description: "Defesa e propositura de ações relacionadas a contratos, responsabilidade civil, propriedade e outras questões patrimoniais."
-      },
-      {
-        label: "Contencioso Criminal",
-        description: "Assistência técnica em processos-crime, desde a fase de investigação até o julgamento, em defesa dos direitos do cliente."
-      },
-      {
-        label: "Contencioso Laboral",
-        description: "Atuação em litígios entre empregadores e trabalhadores, incluindo rescisões, acidentes de trabalho e direitos sindicais."
-      },
-      {
-        label: "Contencioso Administrativo",
-        description: "Impugnação ou defesa de atos da Administração Pública, licitações, contratos públicos e sanções administrativas."
-      },
-      {
-        label: "Recuperação de Créditos",
-        description: "Estratégias judiciais e extrajudiciais para cobrança de dívidas, execuções e renegociação de passivos."
-      },
-    ],
-  },
-  {
-    id: "areas",
-    title: "Áreas de Especialidade",
-    icon: Scale,
-    items: [
-      {
-        label: "Direito Civil",
-        description: "Atuação em questões de pessoas, família, sucessões, contratos, responsabilidade civil e direitos patrimoniais."
-      },
-      {
-        label: "Direito Comercial e Societário",
-        description: "Assessoria a empresas em constituição, fusões, dissoluções, acordos societários e operações comerciais complexas."
-      },
-      {
-        label: "Direito do Trabalho",
-        description: "Consultoria e contencioso em relações de trabalho, contratos, despedimentos, acidentes e cumprimento da legislação laboral."
-      },
-      {
-        label: "Direito Criminal",
-        description: "Defesa técnica em investigações e processos-crime, assegurando o exercício do direito de defesa em todas as fases."
-      },
-      {
-        label: "Direito Administrativo",
-        description: "Atuação junto da Administração Pública, licitações, contratos administrativos, impugnações e regimes especiais."
-      },
-      {
-        label: "Direito Fiscal",
-        description: "Orientação tributária, contestação de autuações fiscais, regularização fiscal e planeamento tributário adequado."
-      },
-      {
-        label: "Direito Imobiliário",
-        description: "Acompanhamento de compra, venda, arrendamento, regularização de propriedades e projetos de desenvolvimento imobiliário."
-      },
-      {
-        label: "Direito Bancário",
-        description: "Assessoria a instituições financeiras e clientes em operações de crédito, garantias, contratos bancários e regulamentação."
-      },
-      {
-        label: "Direito das Tecnologias e Proteção de Dados",
-        description: "Consultoria em contratos tecnológicos, privacidade, proteção de dados pessoais e conformidade digital."
-      },
-      {
-        label: "Arbitragem e Mediação",
-        description: "Resolução alternativa de conflitos através de arbitragem ou mediação, de forma mais rápida e confidencial."
-      },
-    ],
-  },
-];
-
 function Servicos() {
-  const [active, setActive] = useState(TABS[0].id);
-  const current = TABS.find((t) => t.id === active)!;
+  const { t } = useLang();
+  const tabs = t.servicos.tabs;
+  const [active, setActive] = useState(tabs[0].id);
+  const current = tabs.find((x) => x.id === active) ?? tabs[0];
+  const CurrentIcon = TAB_ICONS[current.id] ?? Briefcase;
+
   return (
     <section id="servicos" className="py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHead
-            eyebrow="Serviços & Áreas de Atuação"
-            title={<>Um portfólio jurídico <span className="text-gradient-gold italic">completo</span></>}
-            subtitle="Do aconselhamento estratégico ao contencioso, atuamos com rigor técnico em todas as frentes do Direito."
+            eyebrow={t.servicos.eyebrow}
+            title={<>{t.servicos.titlePre}<span className="text-gradient-gold italic">{t.servicos.titleItalic}</span></>}
+            subtitle={t.servicos.subtitle}
           />
         </Reveal>
 
         <div id="areas" className="mt-14">
           <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-            {TABS.map((t) => {
-              const Icon = t.icon;
-              const isActive = active === t.id;
+            {tabs.map((tab) => {
+              const Icon = TAB_ICONS[tab.id] ?? Briefcase;
+              const isActive = active === tab.id;
               return (
                 <button
-                  key={t.id}
-                  onClick={() => setActive(t.id)}
+                  key={tab.id}
+                  onClick={() => setActive(tab.id)}
                   className={`group inline-flex items-center gap-2.5 rounded-full border px-5 py-3 text-sm font-medium transition-all ${
                     isActive
                       ? "border-gold bg-gold/10 text-gold shadow-gold"
@@ -610,8 +509,8 @@ function Servicos() {
                   }`}
                 >
                   <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t.title}</span>
-                  <span className="sm:hidden">{t.title.split(" ")[0]}</span>
+                  <span className="hidden sm:inline">{tab.title}</span>
+                  <span className="sm:hidden">{tab.title.split(" ")[0]}</span>
                 </button>
               );
             })}
@@ -626,7 +525,7 @@ function Servicos() {
           >
             <div className="mb-8 flex items-center gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gold/40 bg-gold/5 text-gold">
-                <current.icon className="h-5 w-5" />
+                <CurrentIcon className="h-5 w-5" />
               </div>
               <h3 className="font-serif text-2xl text-foreground md:text-3xl">{current.title}</h3>
             </div>
@@ -654,15 +553,8 @@ function Servicos() {
 }
 
 // ---------- Por que escolher ----------
-const REASONS = [
-  { icon: Users, title: "Atendimento Personalizado", desc: "Cada cliente é atendido com escuta ativa e uma estratégia sob medida." },
-  { icon: Award, title: "Elevado Padrão Técnico", desc: "Equipa multidisciplinar com sólida formação e prática consolidada." },
-  { icon: Sparkles, title: "Soluções Estratégicas", desc: "Aconselhamento orientado a resultados e à prevenção de litígios." },
-  { icon: Zap, title: "Rapidez e Eficiência", desc: "Resposta ágil sem comprometer profundidade técnica." },
-  { icon: HeartHandshake, title: "Acompanhamento Permanente", desc: "Presença próxima e foco absoluto no resultado do cliente." },
-];
-
 function PorQue() {
+  const { t, lang } = useLang();
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -675,20 +567,19 @@ function PorQue() {
               <div className="mb-5 inline-flex items-center gap-3">
                 <span className="h-px w-8 bg-gold" />
                 <span className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold">
-                  Por que escolher
+                  {t.porque.eyebrow}
                 </span>
               </div>
               <h2 className="font-serif text-3xl leading-tight md:text-5xl">
-                A escolha da <span className="text-gradient-gold italic">Nairo Moniques</span> é a escolha da confiança.
+                {t.porque.titlePre}<span className="text-gradient-gold italic">{t.porque.titleItalic}</span>{t.porque.titleEnd}
               </h2>
               <p className="mt-6 text-muted-foreground md:text-lg">
-                Construímos relações de longo prazo com clientes que exigem discrição, técnica
-                impecável e resultados mensuráveis.
+                {t.porque.subtitle}
               </p>
               <div className="mt-8 overflow-hidden rounded-2xl border border-gold/20">
                 <img
                   src={teamImg.url}
-                  alt="Equipa Nairo Moniques Advogados e Consultores"
+                  alt={lang === "pt" ? "Equipa Nairo Moniques Advogados e Consultores" : "Nairo Moniques Attorneys & Consultants team"}
                   className="h-72 w-full object-cover md:h-96"
                 />
               </div>
@@ -697,23 +588,26 @@ function PorQue() {
 
           <Reveal delay={0.1}>
             <ul className="space-y-4">
-              {REASONS.map(({ icon: Icon, title, desc }, i) => (
-                <li
-                  key={title}
-                  className="group flex gap-5 rounded-2xl border border-border bg-surface/70 p-6 transition-all hover:border-gold/50 hover:bg-surface"
-                >
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gold/40 bg-gold/5 text-gold">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-3">
-                      <span className="font-serif text-xs text-gold">0{i + 1}</span>
-                      <h4 className="font-serif text-xl text-foreground">{title}</h4>
+              {t.porque.reasons.map((r, i) => {
+                const Icon = REASON_ICONS[r.id] ?? Users;
+                return (
+                  <li
+                    key={r.id}
+                    className="group flex gap-5 rounded-2xl border border-border bg-surface/70 p-6 transition-all hover:border-gold/50 hover:bg-surface"
+                  >
+                    <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gold/40 bg-gold/5 text-gold">
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <p className="mt-1.5 text-sm text-muted-foreground">{desc}</p>
-                  </div>
-                </li>
-              ))}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-3">
+                        <span className="font-serif text-xs text-gold">0{i + 1}</span>
+                        <h4 className="font-serif text-xl text-foreground">{r.title}</h4>
+                      </div>
+                      <p className="mt-1.5 text-sm text-muted-foreground">{r.desc}</p>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </Reveal>
         </div>
@@ -723,14 +617,8 @@ function PorQue() {
 }
 
 // ---------- Contactos ----------
-const AREAS_OPTS = [
-  "Direito Civil", "Direito Comercial e Societário", "Direito do Trabalho",
-  "Direito Criminal", "Direito Administrativo", "Direito Fiscal",
-  "Direito Imobiliário", "Direito Bancário", "Direito das Tecnologias",
-  "Arbitragem e Mediação", "Outro",
-];
-
 function Contactos() {
+  const { t } = useLang();
   const send = useServerFn(sendContactMessage);
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -749,7 +637,7 @@ function Contactos() {
     e.preventDefault();
     if (loading) return;
     if (!form.area) {
-      toast.error("Selecione uma área de interesse.");
+      toast.error(t.contactos.toasts.selectArea);
       return;
     }
     setLoading(true);
@@ -764,26 +652,30 @@ function Contactos() {
         },
       });
       setSent(true);
-      toast.success("Mensagem enviada. Responderemos em até 24 horas úteis.");
+      toast.success(t.contactos.toasts.success);
       setForm({ nome: "", email: "", telefone: "", area: "", mensagem: "" });
     } catch (err) {
       console.error(err);
-      toast.error(
-        "Não foi possível enviar. Tente novamente ou escreva para info@nairomoniquesadvogados.com."
-      );
+      toast.error(t.contactos.toasts.error);
     } finally {
       setLoading(false);
     }
   }
+
+  const contactItems = [
+    { icon: Phone, label: t.contactos.labels.phone, value: "(+258) 86 486 0000", href: "tel:+258864860000" },
+    { icon: Mail, label: t.contactos.labels.email, value: "info@nairomoniquesadvogados.com", href: "mailto:info@nairomoniquesadvogados.com" },
+    { icon: MapPin, label: t.contactos.labels.office, value: t.contactos.address, href: undefined as string | undefined },
+  ];
 
   return (
     <section id="contactos" className="border-t border-border/60 bg-surface/40 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <SectionHead
-            eyebrow="Contactos"
-            title={<>Fale-nos sobre o seu <span className="text-gradient-gold italic">caso</span></>}
-            subtitle="Fale-nos sobre o seu caso."
+            eyebrow={t.contactos.eyebrow}
+            title={<>{t.contactos.titlePre}<span className="text-gradient-gold italic">{t.contactos.titleItalic}</span></>}
+            subtitle={t.contactos.subtitle}
           />
         </Reveal>
 
@@ -791,11 +683,7 @@ function Contactos() {
           <Reveal>
             <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-background/60 p-8 md:p-10">
               <div className="space-y-6">
-                {[
-                  { icon: Phone, label: "Telefone", value: "(+258) 86 486 0000", href: "tel:+258864860000" },
-                  { icon: Mail, label: "E-mail", value: "info@nairomoniquesadvogados.com", href: "mailto:info@nairomoniquesadvogados.com" },
-                  { icon: MapPin, label: "Escritório", value: "Av. Agostinho Neto, n.º 1258, R/C, Porta 12, Cidade de Maputo, Moçambique" },
-                ].map(({ icon: Icon, label, value, href }) => (
+                {contactItems.map(({ icon: Icon, label, value, href }) => (
                   <a
                     key={label}
                     href={href ?? "#"}
@@ -819,8 +707,7 @@ function Contactos() {
                 <div className="flex items-start gap-3">
                   <Lock className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    Toda a comunicação com a Nairo Moniques é tratada com absoluta confidencialidade,
-                    conforme os princípios éticos da advocacia.
+                    {t.contactos.confidentiality}
                   </p>
                 </div>
               </div>
@@ -833,14 +720,14 @@ function Contactos() {
               className="rounded-2xl border border-border bg-background/60 p-8 md:p-10"
             >
               <div className="grid gap-5">
-                <FormField label="Nome Completo" name="nome" type="text" required value={form.nome} onChange={update("nome")} />
+                <FormField label={t.contactos.form.name} name="nome" type="text" required value={form.nome} onChange={update("nome")} />
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <FormField label="E-mail" name="email" type="email" required value={form.email} onChange={update("email")} />
-                  <FormField label="Telefone" name="telefone" type="tel" value={form.telefone} onChange={update("telefone")} />
+                  <FormField label={t.contactos.form.email} name="email" type="email" required value={form.email} onChange={update("email")} />
+                  <FormField label={t.contactos.form.phone} name="telefone" type="tel" value={form.telefone} onChange={update("telefone")} />
                 </div>
                 <div>
                   <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.22em] text-gold">
-                    Área de Interesse
+                    {t.contactos.form.area}
                   </label>
                   <select
                     required
@@ -848,15 +735,15 @@ function Contactos() {
                     onChange={(e) => update("area")(e.target.value)}
                     className="w-full rounded-lg border border-gold/30 bg-surface/60 px-4 py-3.5 text-sm text-foreground outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/30"
                   >
-                    <option value="" disabled>Selecione uma área…</option>
-                    {AREAS_OPTS.map((a) => (
+                    <option value="" disabled>{t.contactos.form.areaPlaceholder}</option>
+                    {t.contactos.areasOpts.map((a) => (
                       <option key={a} value={a} className="bg-background">{a}</option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label className="mb-2 block text-[11px] font-medium uppercase tracking-[0.22em] text-gold">
-                    Mensagem
+                    {t.contactos.form.message}
                   </label>
                   <textarea
                     rows={5}
@@ -866,7 +753,7 @@ function Contactos() {
                     value={form.mensagem}
                     onChange={(e) => update("mensagem")(e.target.value)}
                     className="w-full resize-none rounded-lg border border-gold/30 bg-surface/60 px-4 py-3.5 text-sm text-foreground outline-none transition-all focus:border-gold focus:ring-2 focus:ring-gold/30"
-                    placeholder="Descreva brevemente a sua situação…"
+                    placeholder={t.contactos.form.messagePlaceholder}
                   />
                 </div>
                 <button
@@ -874,11 +761,11 @@ function Contactos() {
                   disabled={loading}
                   className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-primary-foreground shadow-gold transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {loading ? "A enviar…" : sent ? "Mensagem Enviada ✓" : "Enviar Mensagem Segura"}
+                  {loading ? t.cta.enviando : sent ? t.cta.enviada : t.cta.enviar}
                   {!loading && !sent && <ArrowRight className="h-4 w-4" />}
                 </button>
                 <p className="text-center text-[11px] text-muted-foreground">
-                  Ao enviar, concorda com o tratamento confidencial dos seus dados.
+                  {t.contactos.form.consent}
                 </p>
               </div>
             </form>
@@ -925,6 +812,15 @@ function FormField({
 
 // ---------- Footer ----------
 function Footer() {
+  const { t, lang } = useLang();
+  const NAV = [
+    { label: t.nav.inicio, href: "#inicio" },
+    { label: t.nav.sobre, href: "#sobre" },
+    { label: t.nav.equipe, href: "#equipe" },
+    { label: t.nav.servicos, href: "#servicos" },
+    { label: t.nav.areas, href: "#areas" },
+    { label: t.nav.contactos, href: "#contactos" },
+  ];
   return (
     <footer className="border-t border-border/60 bg-background py-14">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -937,19 +833,18 @@ function Footer() {
                   NAIRO MONIQUES
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                  Advogados e Consultores
+                  {lang === "pt" ? "Advogados e Consultores" : "Attorneys & Consultants"}
                 </div>
               </div>
             </div>
             <p className="mt-5 max-w-sm text-sm text-muted-foreground">
-              Defendemos direitos, protegemos interesses e construímos soluções jurídicas com
-              excelência.
+              {t.footer.tagline}
             </p>
           </div>
 
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold">
-              Navegação
+              {t.footer.nav}
             </div>
             <ul className="mt-5 space-y-2.5 text-sm">
               {NAV.map((n) => (
@@ -961,7 +856,7 @@ function Footer() {
               ))}
               <li>
                 <a href="#" className="text-muted-foreground transition-colors hover:text-gold">
-                  Política de Privacidade
+                  {t.footer.privacy}
                 </a>
               </li>
             </ul>
@@ -969,7 +864,7 @@ function Footer() {
 
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold">
-              Contactos
+              {t.footer.contactos}
             </div>
             <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-3">
@@ -982,7 +877,7 @@ function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                Av. Agostinho Neto, n.º 1258, R/C, Porta 12, Maputo, Moçambique
+                {t.contactos.address}
               </li>
             </ul>
           </div>
@@ -990,7 +885,7 @@ function Footer() {
 
         <div className="gold-hairline mt-12 opacity-40" />
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          © 2026 NAIRO MONIQUES – Advogados e Consultores. Todos os direitos reservados. Maputo, Moçambique.
+          {t.footer.rights}
         </p>
       </div>
     </footer>
